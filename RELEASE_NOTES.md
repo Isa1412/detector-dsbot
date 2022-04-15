@@ -1,2 +1,3 @@
-## 1.0-SNAPSHOT
-*   Created template for new repositories.
+## 0.1.0
+* added Spring Boot skeleton
+* added simple echo Discord bot
