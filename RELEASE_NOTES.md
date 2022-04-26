@@ -1,3 +1,6 @@
+## 0.3.0-SNAPSHOT
+* added deployment process to the project
+
 ## 0.2.0
 * implemented Command pattern for handling Discord Bot commands
 
