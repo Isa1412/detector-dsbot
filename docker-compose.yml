@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  ddsb-app:
+    build:
+      context: .
+    environment:
+      JDA_TOKEN: ${JDA_TOKEN}
+    restart: always
