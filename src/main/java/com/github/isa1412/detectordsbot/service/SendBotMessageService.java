@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 public interface SendBotMessageService {
 
     /**
-     * Send message via telegram bot.
+     * Send message via discord bot.
      *
      * @param channel provided {@link MessageChannel} in which messages would be sent.
      * @param message provided message to be sent.

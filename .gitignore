@@ -41,5 +41,11 @@ copyright/
 .project
 .settings/
 
-#File System specific files
+# File System specific files
 .DS_Store
+
+# Test files
+/src/main/resources/application-test.properties
+docker-compose-test.yml
+test-start.sh
+test-stop.sh

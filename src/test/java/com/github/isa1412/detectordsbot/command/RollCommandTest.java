@@ -20,6 +20,6 @@ class RollCommandTest extends AbstractCommandTest {
 
     @Override
     Command getCommand() {
-        return new RollCommand(messageService);
+        return new RollCommand(messageService, memberService);
     }
 }

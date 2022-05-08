@@ -1,5 +1,7 @@
 package com.github.isa1412.detectordsbot.command;
 
+import com.github.isa1412.detectordsbot.service.DiscordGuildService;
+import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageService;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.stereotype.Component;
@@ -15,11 +17,11 @@ public class CommandContainer {
     private final ImmutableMap<String, Command> commandMap;
     private final Command unknownCommand;
 
-    public CommandContainer(SendBotMessageService messageService) {
+    public CommandContainer(SendBotMessageService messageService, DiscordGuildService guildService, MemberService memberService) {
         commandMap = ImmutableMap.<String, Command>builder()
-                .put(GET_IN.getCommandName(), new GetInCommand(messageService))
-                .put(GET_OUT.getCommandName(), new GetOutCommand(messageService))
-                .put(ROLL.getCommandName(), new RollCommand(messageService))
+                .put(START.getCommandName(), new StartCommand(messageService, memberService))
+                .put(STOP.getCommandName(), new StopCommand(messageService))
+                .put(ROLL.getCommandName(), new RollCommand(messageService, memberService))
                 .put(TOP.getCommandName(), new TopCommand(messageService))
                 .put(WINS.getCommandName(), new WinsCommand(messageService))
                 .put(HELP.getCommandName(), new HelpCommand(messageService))

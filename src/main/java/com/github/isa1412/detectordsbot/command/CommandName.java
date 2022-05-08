@@ -5,8 +5,8 @@ package com.github.isa1412.detectordsbot.command;
  */
 public enum CommandName {
 
-    GET_IN("/dgetin"),
-    GET_OUT("/dgetout"),
+    START("/dstart"),
+    STOP("/dstop"),
     ROLL("/droll"),
     TOP("/dtop"),
     WINS("/dwins"),

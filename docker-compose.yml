@@ -2,8 +2,21 @@ version: '3.8'
 
 services:
   ddsb-app:
+    depends_on:
+      - ddsb-db
     build:
       context: .
     environment:
       JDA_TOKEN: ${JDA_TOKEN}
+      BOT_DB_USERNAME: ${BOT_DB_USERNAME}
+      BOT_DB_PASSWORD: ${BOT_DB_PASSWORD}
     restart: always
+  ddsb-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: 'ddsb_db'
+      POSTGRES_USER: ${BOT_DB_USERNAME}
+      POSTGRES_PASSWORD: ${BOT_DB_PASSWORD}
+    ports:
+      - '5432:5432'

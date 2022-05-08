@@ -1,11 +1,14 @@
 package com.github.isa1412.detectordsbot.command;
 
+import com.github.isa1412.detectordsbot.service.DiscordGuildService;
+import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 
@@ -17,7 +20,9 @@ class CommandContainerTest {
     @BeforeEach
     public void init() {
         SendBotMessageService messageService = new SendBotMessageServiceImpl();
-        commandContainer = new CommandContainer(messageService);
+        DiscordGuildService guildService = Mockito.mock(DiscordGuildService.class);
+        MemberService memberService = Mockito.mock(MemberService.class);
+        commandContainer = new CommandContainer(messageService, guildService, memberService);
     }
 
     @Test
