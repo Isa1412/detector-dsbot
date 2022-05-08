@@ -1,0 +1,2 @@
+DELETE FROM member;
+DELETE FROM guild;
