@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
- * GetOut {@link Command}.
+ * Stop {@link Command}.
  */
 public class StopCommand implements Command {
 

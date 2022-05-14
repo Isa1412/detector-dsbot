@@ -1,0 +1,29 @@
+-----------Not enough members-----------
+[NEM]Not enough members
+
+----------------Cooldown----------------
+[CD]Cooldown
+
+---------------New member---------------
+[NM]Welcome to the game
+
+-------------In to the game-------------
+[IN]You are back in the game
+
+-------------Out of the game------------
+[OUT]You are not in the game now
+
+---------------Already in---------------
+[AI]You are already in the game
+
+---------------Already out--------------
+[AO]You are already out of the game
+
+----------------------------------------
+[TW1]
+----------------------------------------
+[TW2]
+----------------------------------------
+[TW3]
+----------------------------------------
+[TW4] 
