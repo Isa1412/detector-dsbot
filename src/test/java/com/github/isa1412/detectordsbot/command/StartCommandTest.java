@@ -3,7 +3,6 @@ package com.github.isa1412.detectordsbot.command;
 import org.junit.jupiter.api.DisplayName;
 
 import static com.github.isa1412.detectordsbot.command.CommandName.START;
-import static com.github.isa1412.detectordsbot.command.StartCommand.START_MESSAGE;
 
 @DisplayName("Unit-level testing for StartCommand")
 class StartCommandTest extends AbstractCommandTest {
@@ -15,11 +14,11 @@ class StartCommandTest extends AbstractCommandTest {
 
     @Override
     String getCommandMessage() {
-        return START_MESSAGE;
+        return responseService.getNewMemberResponse();
     }
 
     @Override
     Command getCommand() {
-        return new StartCommand(messageService, memberService);
+        return new StartCommand(messageService, memberService, responseService);
     }
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 /**
- * Integration-level testing for {@link GuildRepository}.
+ * Integration-level testing for {@link MemberRepository}.
  */
 @ActiveProfiles("test")
 @DataJpaTest
