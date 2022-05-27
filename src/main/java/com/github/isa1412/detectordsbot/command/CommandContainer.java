@@ -20,7 +20,7 @@ public class CommandContainer {
     public CommandContainer(SendBotMessageService messageService, MemberService memberService, ResponseGenerateService responseService) {
         commandMap = ImmutableMap.<String, Command>builder()
                 .put(START.getCommandName(), new StartCommand(messageService, memberService, responseService))
-                .put(STOP.getCommandName(), new StopCommand(messageService))
+                .put(STOP.getCommandName(), new StopCommand(messageService, memberService, responseService))
                 .put(ROLL.getCommandName(), new RollCommand(messageService, memberService))
                 .put(TOP.getCommandName(), new TopCommand(messageService))
                 .put(WINS.getCommandName(), new WinsCommand(messageService))

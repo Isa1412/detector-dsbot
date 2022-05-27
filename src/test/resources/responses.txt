@@ -19,6 +19,9 @@
 ---------------Already out--------------
 [AO]You are already out of the game test
 
+----------------Not member--------------
+[NTM]You are not a member of the game test
+
 ----------------------------------------
 [TW1]
 ----------------------------------------

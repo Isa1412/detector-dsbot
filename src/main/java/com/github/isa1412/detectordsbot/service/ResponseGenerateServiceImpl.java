@@ -42,15 +42,33 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
         return selectedResponses.get(new Random().nextInt(selectedResponses.size()));
     }
 
+    @Override
     public String getNewMemberResponse() {
         return getRandomResponse("[NM]");
     }
 
+    @Override
     public String getAlreadyInResponse() {
         return getRandomResponse("[AI]");
     }
 
+    @Override
     public String getInGameResponse() {
         return getRandomResponse("[IN]");
+    }
+
+    @Override
+    public String getOutGameResponse() {
+        return getRandomResponse("[OUT]");
+    }
+
+    @Override
+    public String getAlreadyOutResponse() {
+        return getRandomResponse("[AO]");
+    }
+
+    @Override
+    public String getNotMemberResponse() {
+        return getRandomResponse("[NTM]");
     }
 }
