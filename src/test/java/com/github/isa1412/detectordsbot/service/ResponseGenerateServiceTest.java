@@ -45,4 +45,31 @@ class ResponseGenerateServiceTest {
         //then
         assertEquals("You are back in the game test", response);
     }
+
+    @Test
+    public void shouldProperlyGenerateOutGameResponse() {
+        //when
+        String response = responseService.getOutGameResponse();
+
+        //then
+        assertEquals("You are not in the game now test", response);
+    }
+
+    @Test
+    public void shouldProperlyGenerateAlreadyOutResponse() {
+        //when
+        String response = responseService.getAlreadyOutResponse();
+
+        //then
+        assertEquals("You are already out of the game test", response);
+    }
+
+    @Test
+    public void shouldProperlyGenerateNotMemberResponse() {
+        //when
+        String response = responseService.getNotMemberResponse();
+
+        //then
+        assertEquals("You are not a member of the game test", response);
+    }
 }

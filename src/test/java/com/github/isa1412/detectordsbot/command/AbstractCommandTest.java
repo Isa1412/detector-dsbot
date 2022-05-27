@@ -22,7 +22,6 @@ abstract class AbstractCommandTest {
     protected MemberService memberService = Mockito.mock(MemberService.class);
     protected ResponseGenerateService responseService = Mockito.mock(ResponseGenerateService.class);
 
-
     abstract String getCommandName();
 
     abstract String getCommandMessage();

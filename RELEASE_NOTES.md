@@ -1,3 +1,9 @@
+## 0.6.0
+* "/stop" command added
+
+## 0.5.0
+* "/start" command added
+
 ## 0.4.0
 * added repository layer
 
