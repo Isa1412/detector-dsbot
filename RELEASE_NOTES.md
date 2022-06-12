@@ -1,3 +1,6 @@
+## 0.7.0
+* "/roll" command added
+
 ## 0.6.0
 * "/stop" command added
 

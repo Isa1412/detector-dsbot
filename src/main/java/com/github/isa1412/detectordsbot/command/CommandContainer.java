@@ -21,7 +21,7 @@ public class CommandContainer {
         commandMap = ImmutableMap.<String, Command>builder()
                 .put(START.getCommandName(), new StartCommand(messageService, memberService, responseService))
                 .put(STOP.getCommandName(), new StopCommand(messageService, memberService, responseService))
-                .put(ROLL.getCommandName(), new RollCommand(messageService, memberService))
+                .put(ROLL.getCommandName(), new RollCommand(messageService, memberService, responseService))
                 .put(TOP.getCommandName(), new TopCommand(messageService))
                 .put(WINS.getCommandName(), new WinsCommand(messageService))
                 .put(HELP.getCommandName(), new HelpCommand(messageService))

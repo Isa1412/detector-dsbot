@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * Implementation of {@link DiscordGuildService}.
+ * Implementation of {@link GuildService}.
  */
 @Service
-public class DiscordGuildServiceImpl implements DiscordGuildService {
+public class GuildServiceImpl implements GuildService {
 
     private final GuildRepository guildRepository;
 
-    public DiscordGuildServiceImpl(GuildRepository guildRepository) {
+    public GuildServiceImpl(GuildRepository guildRepository) {
         this.guildRepository = guildRepository;
     }
 

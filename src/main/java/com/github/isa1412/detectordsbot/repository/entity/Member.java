@@ -32,6 +32,10 @@ public class Member {
 
     private boolean active;
 
+    public void incCount() {
+        count++;
+    }
+
     public Member(MemberId id) {
         this.id = id;
         this.guild = new Guild(id.getGuildId());

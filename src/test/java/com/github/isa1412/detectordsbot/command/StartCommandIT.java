@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,18 +20,22 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static com.github.isa1412.detectordsbot.command.CommandName.START;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 /**
  * Integration-level testing for {@link StartCommand}.
  */
 @ActiveProfiles("test")
+@TestPropertySource(properties = {"spring.autoconfigure.exclude=com.github.isa1412.jda.starter.JDAAutoConfig"})
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = NONE)
@@ -75,7 +78,7 @@ public class StartCommandIT {
     public void shouldProperlyNewMemberResponse() {
         //given
         MessageChannel channel = event.getChannel();
-        MemberId id = CommandUtils.getMemberId(event);
+        MemberId id = getMemberId(event);
         Member member = new Member(id);
 
         //when
@@ -84,8 +87,8 @@ public class StartCommandIT {
 
         //then
         Mockito.verify(channel).sendMessage(responseService.getNewMemberResponse());
-        Assertions.assertTrue(saved.isPresent());
-        Assertions.assertEquals(saved.get(), member);
+        assertTrue(saved.isPresent());
+        assertEquals(saved.get(), member);
     }
 
     @Sql(scripts = {"/sql/clearDB.sql"})
@@ -93,7 +96,7 @@ public class StartCommandIT {
     public void shouldProperlyAlreadyInResponse() {
         //given
         MessageChannel channel = event.getChannel();
-        MemberId id = CommandUtils.getMemberId(event);
+        MemberId id = getMemberId(event);
         Member member = new Member(id);
         memberService.save(member);
 
@@ -103,8 +106,8 @@ public class StartCommandIT {
 
         //then
         Mockito.verify(channel).sendMessage(responseService.getAlreadyInResponse());
-        Assertions.assertTrue(saved.isPresent());
-        Assertions.assertEquals(saved.get(), member);
+        assertTrue(saved.isPresent());
+        assertEquals(saved.get(), member);
     }
 
     @Sql(scripts = {"/sql/clearDB.sql"})
@@ -112,7 +115,7 @@ public class StartCommandIT {
     public void shouldProperlyInGameResponse() {
         //given
         MessageChannel channel = event.getChannel();
-        MemberId id = CommandUtils.getMemberId(event);
+        MemberId id = getMemberId(event);
         Member member = new Member(id);
         member.setActive(false);
         memberService.save(member);
@@ -123,9 +126,9 @@ public class StartCommandIT {
 
         //then
         Mockito.verify(channel).sendMessage(responseService.getInGameResponse());
-        Assertions.assertTrue(saved.isPresent());
-        Assertions.assertEquals(saved.get().getId(), member.getId());
-        Assertions.assertEquals(saved.get().getCount(), member.getCount());
-        Assertions.assertNotEquals(saved.get().isActive(), member.isActive());
+        assertTrue(saved.isPresent());
+        assertEquals(saved.get().getId(), member.getId());
+        assertEquals(saved.get().getCount(), member.getCount());
+        assertNotEquals(saved.get().isActive(), member.isActive());
     }
 }

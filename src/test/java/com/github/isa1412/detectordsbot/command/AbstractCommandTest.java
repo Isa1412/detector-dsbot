@@ -1,9 +1,6 @@
 package com.github.isa1412.detectordsbot.command;
 
-import com.github.isa1412.detectordsbot.service.MemberService;
-import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
-import com.github.isa1412.detectordsbot.service.SendBotMessageService;
-import com.github.isa1412.detectordsbot.service.SendBotMessageServiceImpl;
+import com.github.isa1412.detectordsbot.service.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -12,6 +9,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Abstract class for testing {@link Command}s.
@@ -20,7 +18,7 @@ abstract class AbstractCommandTest {
 
     protected SendBotMessageService messageService = new SendBotMessageServiceImpl();
     protected MemberService memberService = Mockito.mock(MemberService.class);
-    protected ResponseGenerateService responseService = Mockito.mock(ResponseGenerateService.class);
+    protected ResponseGenerateService responseService = new ResponseGenerateServiceImpl(new ClassPathResource("responses.txt"));
 
     abstract String getCommandName();
 

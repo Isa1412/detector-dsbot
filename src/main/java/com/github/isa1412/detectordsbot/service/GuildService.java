@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * {@link Service} for handling {@link Guild} entity.
  */
-public interface DiscordGuildService {
+public interface GuildService {
 
     /**
      * Save provided {@link Guild} entity.

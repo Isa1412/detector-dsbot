@@ -10,8 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
@@ -30,7 +30,7 @@ public class MemberRepositoryIT {
     @Test
     public void shouldProperlyFindAllActiveUsersByGuildId() {
         //when
-        Set<Member> members = memberRepository.findAllByGuildIdAndActiveTrue("90045684560");
+        List<Member> members = memberRepository.findAllByGuildIdAndActiveTrue("90045684560");
 
         //then
         Assertions.assertEquals(3, members.size());

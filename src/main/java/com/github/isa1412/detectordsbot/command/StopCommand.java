@@ -7,6 +7,8 @@ import com.github.isa1412.detectordsbot.service.SendBotMessageService;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import static com.github.isa1412.detectordsbot.command.CommandUtils.*;
+
 /**
  * Stop {@link Command}.
  */
@@ -24,8 +26,8 @@ public class StopCommand implements Command {
 
     @Override
     public void execute(MessageReceivedEvent event) {
-        MemberId memberId = CommandUtils.getMemberId(event);
-        MessageChannel channel = CommandUtils.getChannel(event);
+        MemberId memberId = getMemberId(event);
+        MessageChannel channel = getChannel(event);
 
         memberService.findById(memberId).ifPresentOrElse(
                 member -> {
