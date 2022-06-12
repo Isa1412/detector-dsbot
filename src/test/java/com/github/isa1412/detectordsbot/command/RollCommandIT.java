@@ -5,6 +5,7 @@ import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateServiceImpl;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -24,29 +25,32 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import static com.github.isa1412.detectordsbot.command.CommandName.STOP;
-import static com.github.isa1412.detectordsbot.command.CommandUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.github.isa1412.detectordsbot.command.CommandName.ROLL;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getTimestamp;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 /**
- * Integration-level testing for {@link StopCommand}.
+ * Integration-level testing for {@link RollCommand}.
  */
 @ActiveProfiles("test")
 @TestPropertySource(properties = {"spring.autoconfigure.exclude=com.github.isa1412.jda.starter.JDAAutoConfig"})
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = NONE)
-public class StopCommandIT {
+public class RollCommandIT {
 
     @Autowired
     private MemberService memberService;
     @Autowired
     private CommandContainer commandContainer;
     private final ResponseGenerateService responseService = new ResponseGenerateServiceImpl(new ClassPathResource("responses.txt"));
-    private final String commandName = STOP.getCommandName();
+    private final String commandName = ROLL.getCommandName();
     private MessageReceivedEvent event;
 
     @BeforeEach
@@ -60,17 +64,22 @@ public class StopCommandIT {
         MessageAction action = Mockito.mock(MessageAction.class);
         User user = Mockito.mock(User.class);
         Guild guild = Mockito.mock(Guild.class);
+        JDA jda = Mockito.mock(JDA.class);
 
         Mockito.when(event.getChannel()).thenReturn(channel);
         Mockito.when(event.getMessage()).thenReturn(message);
         Mockito.when(message.getContentDisplay()).thenReturn(commandName);
+        Mockito.when(message.getTimeCreated()).thenReturn(OffsetDateTime.now());
         Mockito.when(channel.sendMessage(responseService.getNotMemberResponse())).thenReturn(action);
-        Mockito.when(channel.sendMessage(responseService.getAlreadyOutResponse())).thenReturn(action);
-        Mockito.when(channel.sendMessage(responseService.getOutGameResponse())).thenReturn(action);
+        Mockito.when(channel.sendMessage(responseService.getCDResponse(getTimestamp(event)))).thenReturn(action);
+        Mockito.when(channel.sendMessage(responseService.getRollResponse(userId).get(0))).thenReturn(action);
         Mockito.when(event.getAuthor()).thenReturn(user);
         Mockito.when(event.getGuild()).thenReturn(guild);
         Mockito.when(user.getId()).thenReturn(userId);
         Mockito.when(guild.getId()).thenReturn(guildId);
+        Mockito.when(event.getJDA()).thenReturn(jda);
+        Mockito.when(jda.getUserById(userId)).thenReturn(user);
+        Mockito.when(user.getAvatarUrl()).thenReturn(null);
     }
 
     @Sql(scripts = {"/sql/clearDB.sql"})
@@ -91,12 +100,12 @@ public class StopCommandIT {
 
     @Sql(scripts = {"/sql/clearDB.sql"})
     @Test
-    public void shouldProperlyAlreadyOutResponse() {
+    public void shouldProperlyCDResponse() {
         //given
         MessageChannel channel = event.getChannel();
         MemberId id = getMemberId(event);
         Member member = new Member(id);
-        member.setActive(false);
+        member.getGuild().setTimestamp(getTimestamp(event));
         memberService.save(member);
 
         //when
@@ -104,16 +113,14 @@ public class StopCommandIT {
         Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getAlreadyOutResponse());
+        Mockito.verify(channel).sendMessage(responseService.getCDResponse(getTimestamp(event)));
         assertTrue(saved.isPresent());
-        assertEquals(saved.get().getId(), member.getId());
-        assertEquals(saved.get().getCount(), member.getCount());
-        assertEquals(saved.get().isActive(), member.isActive());
+        assertEquals(saved.get().getCount(), 0);
     }
 
     @Sql(scripts = {"/sql/clearDB.sql"})
     @Test
-    public void shouldProperlyOutGameResponse() {
+    public void shouldProperlyRollResponse() {
         //given
         MessageChannel channel = event.getChannel();
         MemberId id = getMemberId(event);
@@ -125,10 +132,9 @@ public class StopCommandIT {
         Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getOutGameResponse());
+        Mockito.verify(channel).sendMessage(responseService.getRollResponse(id.getUserId()).get(0));
         assertTrue(saved.isPresent());
-        assertEquals(saved.get().getId(), member.getId());
-        assertEquals(saved.get().getCount(), member.getCount());
-        assertFalse(saved.get().isActive());
+        assertEquals(saved.get().getCount(), 1);
+        assertEquals(saved.get().getGuild().getTimestamp(), getTimestamp(event));
     }
 }

@@ -6,7 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DisplayName("Unit-level testing for ResponseGenerateService")
 class ResponseGenerateServiceTest {
@@ -25,7 +28,7 @@ class ResponseGenerateServiceTest {
         String response = responseService.getNewMemberResponse();
 
         //then
-        assertEquals("Welcome to the game test", response);
+        assertEquals("Welcome to the game", response);
     }
 
     @Test
@@ -34,7 +37,7 @@ class ResponseGenerateServiceTest {
         String response = responseService.getAlreadyInResponse();
 
         //then
-        assertEquals("You are already in the game test", response);
+        assertEquals("You are already in the game", response);
     }
 
     @Test
@@ -43,7 +46,7 @@ class ResponseGenerateServiceTest {
         String response = responseService.getInGameResponse();
 
         //then
-        assertEquals("You are back in the game test", response);
+        assertEquals("You are back in the game", response);
     }
 
     @Test
@@ -52,7 +55,7 @@ class ResponseGenerateServiceTest {
         String response = responseService.getOutGameResponse();
 
         //then
-        assertEquals("You are not in the game now test", response);
+        assertEquals("You are not in the game now", response);
     }
 
     @Test
@@ -61,7 +64,7 @@ class ResponseGenerateServiceTest {
         String response = responseService.getAlreadyOutResponse();
 
         //then
-        assertEquals("You are already out of the game test", response);
+        assertEquals("You are already out of the game", response);
     }
 
     @Test
@@ -70,6 +73,32 @@ class ResponseGenerateServiceTest {
         String response = responseService.getNotMemberResponse();
 
         //then
-        assertEquals("You are not a member of the game test", response);
+        assertEquals("You are not a member of the game", response);
+    }
+
+    @Test
+    public void shouldProperlyGenerateRollResponse() {
+        //given
+        String id = "123";
+
+        //when
+        List<String> responses = responseService.getRollResponse(id);
+
+        //then
+        assertFalse(responses.isEmpty());
+        assertEquals(responses.size(), 1);
+        assertEquals("Oh <@123>, you are the winner today!!!", responses.get(0));
+    }
+
+    @Test
+    public void shouldProperlyGenerateCDResponse() {
+        //given
+        long timestamp = 123L;
+
+        //when
+        String response = responseService.getCDResponse(timestamp);
+
+        //then
+        assertEquals("Cooldown, you can roll <t:123:R>", response);
     }
 }

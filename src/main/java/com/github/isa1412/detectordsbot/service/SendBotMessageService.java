@@ -14,4 +14,12 @@ public interface SendBotMessageService {
      * @param message provided message to be sent.
      */
     void sendMessage(MessageChannel channel, String message);
+
+    /**
+     * Send message via discord bot with delay.
+     *
+     * @param channel provided {@link MessageChannel} in which messages would be sent.
+     * @param message provided message to be sent.
+     */
+    void sendMessageWithDelay(MessageChannel channel, String message);
 }

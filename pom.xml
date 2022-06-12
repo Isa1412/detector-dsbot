@@ -12,7 +12,7 @@
 
 	<groupId>com.github.isa1412</groupId>
 	<artifactId>detector-dsbot</artifactId>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 
 	<name>Detector Discord Bot</name>
 	<description>Discord bot for AHiMEWKN^_^ community</description>

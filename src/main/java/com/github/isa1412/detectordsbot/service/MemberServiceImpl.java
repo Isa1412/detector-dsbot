@@ -5,8 +5,8 @@ import com.github.isa1412.detectordsbot.repository.entity.Member;
 import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -28,7 +28,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Set<Member> findByGuildId(String guildId) {
+    public Optional<Member> findActiveById(MemberId id) {
+        return memberRepository.findAllByIdAndActiveTrue(id);
+    }
+
+    @Override
+    public List<Member> findActiveByGuildId(String guildId) {
         return memberRepository.findAllByGuildIdAndActiveTrue(guildId);
     }
 }

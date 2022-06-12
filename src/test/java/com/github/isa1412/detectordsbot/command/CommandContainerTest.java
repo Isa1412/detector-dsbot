@@ -1,9 +1,6 @@
 package com.github.isa1412.detectordsbot.command;
 
-import com.github.isa1412.detectordsbot.service.MemberService;
-import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
-import com.github.isa1412.detectordsbot.service.SendBotMessageService;
-import com.github.isa1412.detectordsbot.service.SendBotMessageServiceImpl;
+import com.github.isa1412.detectordsbot.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

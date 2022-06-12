@@ -59,7 +59,14 @@ public class CommandUtils {
         return new MemberId(getUserId(event), getGuildId(event));
     }
 
-    public static Long getTime(MessageReceivedEvent event) {
-        return event.getMessage().getTimeCreated().toInstant().getEpochSecond() + 86400;
+    /**
+     * Retrieve unix timestamp of the message plus recharge time(1 day = 86400 seconds) from {@link MessageReceivedEvent} object.
+     *
+     * @param event provided {@link MessageReceivedEvent}
+     * @return the unix timestamp of the message from the provided {@link MessageReceivedEvent} object.
+     */
+    public static long getTimestamp(MessageReceivedEvent event) {
+        long rechargeTime = 86400;
+        return event.getMessage().getTimeCreated().toInstant().getEpochSecond() + rechargeTime;
     }
 }

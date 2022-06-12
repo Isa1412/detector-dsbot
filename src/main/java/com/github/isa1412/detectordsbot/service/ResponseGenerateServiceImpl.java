@@ -1,5 +1,6 @@
 package com.github.isa1412.detectordsbot.service;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ResponseGenerateServiceImpl implements ResponseGenerateService {
@@ -26,7 +28,7 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
             InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
             return new BufferedReader(inputStreamReader)
                     .lines()
-                    .filter(line -> line.contains("["))
+                    .filter(l -> l.contains("["))
                     .map(String::trim)
                     .collect(Collectors.toSet());
         } catch (IOException e) {
@@ -36,8 +38,8 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
 
     private String getRandomResponse(String pattern) {
         List<String> selectedResponses = responses.stream()
-                .filter(response -> response.contains(pattern))
-                .map(response -> response.replace(pattern, ""))
+                .filter(r -> r.contains(pattern))
+                .map(r -> r.replace(pattern, "").trim())
                 .collect(Collectors.toList());
         return selectedResponses.get(new Random().nextInt(selectedResponses.size()));
     }
@@ -70,5 +72,20 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
     @Override
     public String getNotMemberResponse() {
         return getRandomResponse("[NTM]");
+    }
+
+    @Override
+    public List<String> getRollResponse(String memberId) {
+        return IntStream
+                .range(1, 5)
+                .mapToObj(i -> getRandomResponse("[R" + i + "]"))
+                .filter(Strings::isNotBlank)
+                .map(r -> r.replace("[W]", "<@" + memberId + ">"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getCDResponse(long timestamp) {
+        return getRandomResponse("[CD]").replace("[T]", "<t:" + timestamp + ":R>");
     }
 }
