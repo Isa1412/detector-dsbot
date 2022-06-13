@@ -8,7 +8,8 @@ import com.github.isa1412.detectordsbot.service.SendBotMessageService;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import static com.github.isa1412.detectordsbot.command.CommandUtils.*;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getChannel;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
 
 /**
  * Start {@link Command}.

@@ -1,6 +1,7 @@
 package com.github.isa1412.detectordsbot.service;
 
 import com.github.isa1412.detectordsbot.command.RollCommand;
+import com.github.isa1412.detectordsbot.repository.entity.Member;
 
 import java.util.List;
 
@@ -66,4 +67,12 @@ public interface ResponseGenerateService {
      * @return {@link String} with response text.
      */
     String getCDResponse(long timestamp);
+
+    /**
+     * Generate a response with top 10 winners.
+     *
+     * @param members provided top 10 members.
+     * @return {@link String} with response text.
+     */
+    String getTopResponse(List<Member> members);
 }
