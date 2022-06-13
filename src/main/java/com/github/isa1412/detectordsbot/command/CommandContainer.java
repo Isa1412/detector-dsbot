@@ -22,7 +22,7 @@ public class CommandContainer {
                 .put(START.getCommandName(), new StartCommand(messageService, memberService, responseService))
                 .put(STOP.getCommandName(), new StopCommand(messageService, memberService, responseService))
                 .put(ROLL.getCommandName(), new RollCommand(messageService, memberService, responseService))
-                .put(TOP.getCommandName(), new TopCommand(messageService))
+                .put(TOP.getCommandName(), new TopCommand(messageService, memberService, responseService))
                 .put(WINS.getCommandName(), new WinsCommand(messageService))
                 .put(HELP.getCommandName(), new HelpCommand(messageService))
                 .build();

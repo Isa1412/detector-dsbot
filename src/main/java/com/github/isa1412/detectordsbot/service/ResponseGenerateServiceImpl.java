@@ -1,5 +1,6 @@
 package com.github.isa1412.detectordsbot.service;
 
+import com.github.isa1412.detectordsbot.repository.entity.Member;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -87,5 +88,13 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
     @Override
     public String getCDResponse(long timestamp) {
         return getRandomResponse("[CD]").replace("[T]", "<t:" + timestamp + ":R>");
+    }
+
+    @Override
+    public String getTopResponse(List<Member> members) {
+        return getRandomResponse("[TOP]") + "\n" +
+                members.stream()
+                        .map(m -> "<@" + m.getId().getUserId() + "> - " + m.getCount())
+                        .collect(Collectors.joining("\n"));
     }
 }

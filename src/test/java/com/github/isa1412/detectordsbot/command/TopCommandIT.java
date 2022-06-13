@@ -24,30 +24,42 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
-import static com.github.isa1412.detectordsbot.command.CommandName.START;
+import static com.github.isa1412.detectordsbot.command.CommandName.TOP;
 import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 /**
- * Integration-level testing for {@link StartCommand}.
+ * Integration-level testing for {@link TopCommand}.
  */
 @ActiveProfiles("test")
 @TestPropertySource(properties = {"spring.autoconfigure.exclude=com.github.isa1412.jda.starter.JDAAutoConfig"})
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = NONE)
-public class StartCommandIT {
+public class TopCommandIT {
 
     @Autowired
     private MemberService memberService;
     @Autowired
     private CommandContainer commandContainer;
     private final ResponseGenerateService responseService = new ResponseGenerateServiceImpl(new ClassPathResource("responses.txt"));
-    private final String commandName = START.getCommandName();
+    private final String commandName = TOP.getCommandName();
     private MessageReceivedEvent event;
+    private final String response = responseService.getTopResponse(new ArrayList<>()) +
+            "<@123456785> - 99\n" +
+            "<@123456781> - 54\n" +
+            "<@123456784> - 34\n" +
+            "<@123123121> - 34\n" +
+            "<@123456789> - 21\n" +
+            "<@123456788> - 13\n" +
+            "<@123456787> - 12\n" +
+            "<@123123124> - 12\n" +
+            "<@123123125> - 9\n" +
+            "<@123123122> - 4";
 
     @BeforeEach
     public void init() {
@@ -64,9 +76,8 @@ public class StartCommandIT {
         Mockito.when(event.getChannel()).thenReturn(channel);
         Mockito.when(event.getMessage()).thenReturn(message);
         Mockito.when(message.getContentDisplay()).thenReturn(commandName);
-        Mockito.when(channel.sendMessage(responseService.getNewMemberResponse())).thenReturn(action);
-        Mockito.when(channel.sendMessage(responseService.getAlreadyInResponse())).thenReturn(action);
-        Mockito.when(channel.sendMessage(responseService.getInGameResponse())).thenReturn(action);
+        Mockito.when(channel.sendMessage(responseService.getNotMemberResponse())).thenReturn(action);
+        Mockito.when(channel.sendMessage(response)).thenReturn(action);
         Mockito.when(event.getAuthor()).thenReturn(user);
         Mockito.when(event.getGuild()).thenReturn(guild);
         Mockito.when(user.getId()).thenReturn(userId);
@@ -75,60 +86,30 @@ public class StartCommandIT {
 
     @Sql(scripts = {"/sql/clearDB.sql"})
     @Test
-    public void shouldProperlyNewMemberResponse() {
+    public void shouldProperlyNotMemberResponse() {
         //given
         MessageChannel channel = event.getChannel();
         MemberId id = getMemberId(event);
-        Member member = new Member(id);
 
         //when
         commandContainer.findCommand(commandName).execute(event);
         Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getNewMemberResponse());
-        assertTrue(saved.isPresent());
-        assertEquals(saved.get(), member);
+        Mockito.verify(channel).sendMessage(responseService.getNotMemberResponse());
+        assertTrue(saved.isEmpty());
     }
 
-    @Sql(scripts = {"/sql/clearDB.sql"})
+    @Sql(scripts = {"/sql/clearDB.sql", "/sql/top.sql"})
     @Test
-    public void shouldProperlyAlreadyInResponse() {
+    public void shouldProperlyTopResponse() {
         //given
         MessageChannel channel = event.getChannel();
-        MemberId id = getMemberId(event);
-        Member member = new Member(id);
-        memberService.save(member);
 
         //when
         commandContainer.findCommand(commandName).execute(event);
-        Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getAlreadyInResponse());
-        assertTrue(saved.isPresent());
-        assertEquals(saved.get(), member);
-    }
-
-    @Sql(scripts = {"/sql/clearDB.sql"})
-    @Test
-    public void shouldProperlyInGameResponse() {
-        //given
-        MessageChannel channel = event.getChannel();
-        MemberId id = getMemberId(event);
-        Member member = new Member(id);
-        member.setActive(false);
-        memberService.save(member);
-
-        //when
-        commandContainer.findCommand(commandName).execute(event);
-        Optional<Member> saved = memberService.findById(id);
-
-        //then
-        Mockito.verify(channel).sendMessage(responseService.getInGameResponse());
-        assertTrue(saved.isPresent());
-        assertEquals(saved.get().getId(), member.getId());
-        assertEquals(saved.get().getCount(), member.getCount());
-        assertNotEquals(saved.get().isActive(), member.isActive());
+        Mockito.verify(channel).sendMessage(response);
     }
 }

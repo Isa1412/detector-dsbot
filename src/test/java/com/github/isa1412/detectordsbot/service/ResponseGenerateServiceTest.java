@@ -1,5 +1,7 @@
 package com.github.isa1412.detectordsbot.service;
 
+import com.github.isa1412.detectordsbot.repository.entity.Member;
+import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,5 +102,21 @@ class ResponseGenerateServiceTest {
 
         //then
         assertEquals("Cooldown, you can roll <t:123:R>", response);
+    }
+
+    @Test
+    public void shouldProperlyGenerateTopResponse() {
+        //given
+        String userId = "123123123";
+        String guildId = "678969697";
+        MemberId id = new MemberId(userId, guildId);
+        Member member = new Member(id);
+        List<Member> members = List.of(member);
+
+        //when
+        String response = responseService.getTopResponse(members);
+
+        //then
+        assertEquals("Top 10 winners:\n<@123123123> - 0", response);
     }
 }

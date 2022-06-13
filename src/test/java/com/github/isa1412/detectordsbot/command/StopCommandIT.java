@@ -27,7 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Optional;
 
 import static com.github.isa1412.detectordsbot.command.CommandName.STOP;
-import static com.github.isa1412.detectordsbot.command.CommandUtils.*;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
