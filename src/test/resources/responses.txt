@@ -2,7 +2,7 @@
 [NEM]Not enough members
 
 ----------------Cooldown----------------
-[CD]Cooldown, you can roll [T]
+[CD]Cooldown, you can roll [TS]
 
 ---------------New member---------------
 [NM]Welcome to the game
@@ -32,7 +32,17 @@
 [R3]
 
 -----------------Roll 4-----------------
-[R4]Oh [W], you are the winner today!!!
+[R4]Oh [ID], you are the winner today!!!
 
 -----------------Top 10-----------------
 [TOP]Top 10 winners:
+
+------------------Wins------------------
+[WIN][ID] you have [C] wins
+
+------------------Help------------------
+[HLP]/dstart - start/unpause the game
+[HLP]/dstop - stop/pause the game
+[HLP]/droll - determine the winner of the day
+[HLP]/dtop - show top 10 winners
+[HLP]/dwins - show your wins

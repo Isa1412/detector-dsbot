@@ -11,29 +11,31 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 @Service
 public class ResponseGenerateServiceImpl implements ResponseGenerateService {
 
-    private final Set<String> responses;
+    private final List<String> responses;
 
     public ResponseGenerateServiceImpl(@Value("classpath:responses.txt") Resource resource) {
         responses = loadResponses(resource);
     }
 
-    private Set<String> loadResponses(Resource resource) {
+    private List<String> loadResponses(Resource resource) {
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(resource.getInputStream());
             return new BufferedReader(inputStreamReader)
                     .lines()
                     .filter(l -> l.contains("["))
                     .map(String::trim)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Error reading %s: %s", resource.getFilename(), e.getMessage()));
+            throw new RuntimeException(format("Error reading %s: %s", resource.getFilename(), e.getMessage()));
         }
     }
 
@@ -81,13 +83,13 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
                 .range(1, 5)
                 .mapToObj(i -> getRandomResponse("[R" + i + "]"))
                 .filter(Strings::isNotBlank)
-                .map(r -> r.replace("[W]", "<@" + memberId + ">"))
+                .map(r -> r.replace("[ID]", "<@" + memberId + ">"))
                 .collect(Collectors.toList());
     }
 
     @Override
     public String getCDResponse(long timestamp) {
-        return getRandomResponse("[CD]").replace("[T]", "<t:" + timestamp + ":R>");
+        return getRandomResponse("[CD]").replace("[TS]", "<t:" + timestamp + ":R>");
     }
 
     @Override
@@ -96,5 +98,18 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
                 members.stream()
                         .map(m -> "<@" + m.getId().getUserId() + "> - " + m.getCount())
                         .collect(Collectors.joining("\n"));
+    }
+
+    @Override
+    public String getWinsResponse(String memberId, int count) {
+        return getRandomResponse("[WIN]").replace("[ID]", "<@" + memberId + ">").replace("[C]", valueOf(count));
+    }
+
+    @Override
+    public String getHelpResponse() {
+        return responses.stream()
+                .filter(r -> r.contains("[HLP]"))
+                .map(r -> r.replace("[HLP]", "").trim())
+                .collect(Collectors.joining("\n"));
     }
 }
