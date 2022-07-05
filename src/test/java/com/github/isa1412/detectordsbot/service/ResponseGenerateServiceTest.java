@@ -2,11 +2,9 @@ package com.github.isa1412.detectordsbot.service;
 
 import com.github.isa1412.detectordsbot.repository.entity.Member;
 import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -16,13 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @DisplayName("Unit-level testing for ResponseGenerateService")
 class ResponseGenerateServiceTest {
 
-    private ResponseGenerateService responseService;
-
-    @BeforeEach
-    public void init() {
-        Resource testResource = new ClassPathResource("responses.txt");
-        responseService = new ResponseGenerateServiceImpl(testResource);
-    }
+    private final ResponseGenerateService responseService = new ResponseGenerateServiceImpl(new ClassPathResource("responses.txt"));
 
     @Test
     public void shouldProperlyGenerateNewMemberResponse() {
@@ -118,5 +110,31 @@ class ResponseGenerateServiceTest {
 
         //then
         assertEquals("Top 10 winners:\n<@123123123> - 0", response);
+    }
+
+    @Test
+    public void shouldProperlyGenerateWinsResponse() {
+        //given
+        String userId = "123123123";
+        int winsCount = 21;
+
+        //when
+        String response = responseService.getWinsResponse(userId, winsCount);
+
+        //then
+        assertEquals("<@123123123> you have 21 wins", response);
+    }
+
+    @Test
+    public void shouldProperlyGenerateHelpResponse() {
+        //when
+        String response = responseService.getHelpResponse();
+
+        //then
+        assertEquals("/dstart - start/unpause the game\n" +
+                "/dstop - stop/pause the game\n" +
+                "/droll - determine the winner of the day\n" +
+                "/dtop - show top 10 winners\n" +
+                "/dwins - show your wins", response);
     }
 }

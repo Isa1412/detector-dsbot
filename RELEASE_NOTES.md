@@ -1,3 +1,7 @@
+## 0.8.0
+* "/wins" command added
+* "/help" command added
+
 ## 0.7.0
 * "/roll" command added
 * "/top" command added

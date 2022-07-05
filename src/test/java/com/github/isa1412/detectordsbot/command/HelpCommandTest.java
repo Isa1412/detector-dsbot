@@ -3,7 +3,6 @@ package com.github.isa1412.detectordsbot.command;
 import org.junit.jupiter.api.DisplayName;
 
 import static com.github.isa1412.detectordsbot.command.CommandName.HELP;
-import static com.github.isa1412.detectordsbot.command.HelpCommand.HELP_MESSAGE;
 
 @DisplayName("Unit-level testing for HelpCommand")
 class HelpCommandTest extends AbstractCommandTest {
@@ -15,11 +14,11 @@ class HelpCommandTest extends AbstractCommandTest {
 
     @Override
     String getCommandMessage() {
-        return HELP_MESSAGE;
+        return responseService.getHelpResponse();
     }
 
     @Override
     Command getCommand() {
-        return new HelpCommand(messageService);
+        return new HelpCommand(messageService, responseService);
     }
 }

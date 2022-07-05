@@ -75,4 +75,20 @@ public interface ResponseGenerateService {
      * @return {@link String} with response text.
      */
     String getTopResponse(List<Member> members);
+
+    /**
+     * Generate a response with member wins.
+     *
+     * @param memberId provided member ID.
+     * @param count provided wins count.
+     * @return {@link String} with response text.
+     */
+    String getWinsResponse(String memberId, int count);
+
+    /**
+     * Generate a response with help info.
+     *
+     * @return {@link String} with response text.
+     */
+    String getHelpResponse();
 }
