@@ -5,14 +5,12 @@ import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageService;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.github.isa1412.detectordsbot.command.CommandUtils.getChannel;
 import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
 
 /**
@@ -31,9 +29,8 @@ public class TopCommand implements Command {
     }
 
     @Override
-    public void execute(MessageReceivedEvent event) {
+    public void execute(SlashCommandInteractionEvent event) {
         MemberId memberId = getMemberId(event);
-        MessageChannel channel = getChannel(event);
 
         memberService.findActiveById(memberId).ifPresentOrElse(
                 member -> {
@@ -42,9 +39,9 @@ public class TopCommand implements Command {
                             .limit(10)
                             .collect(Collectors.toList());
 
-                    messageService.sendMessage(channel, responseService.getTopResponse(top));
+                    messageService.sendReply(event, responseService.getTopResponse(top));
                 },
-                () -> messageService.sendMessage(channel, responseService.getNotMemberResponse())
+                () -> messageService.sendReply(event, responseService.getNotMemberResponse())
         );
     }
 }

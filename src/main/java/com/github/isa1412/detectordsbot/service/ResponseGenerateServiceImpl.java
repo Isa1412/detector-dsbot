@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -106,10 +107,10 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
     }
 
     @Override
-    public String getHelpResponse() {
+    public Map<String, String> getDescriptions() {
         return responses.stream()
-                .filter(r -> r.contains("[HLP]"))
-                .map(r -> r.replace("[HLP]", "").trim())
-                .collect(Collectors.joining("\n"));
+                .filter(r -> r.contains("[DSC]"))
+                .map(r -> r.replace("[DSC]", "").trim())
+                .collect(Collectors.toMap(r -> r.split(" - ")[0], r -> r.split(" - ")[1]));
     }
 }

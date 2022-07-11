@@ -5,12 +5,11 @@ package com.github.isa1412.detectordsbot.command;
  */
 public enum CommandName {
 
-    START("/dstart"),
-    STOP("/dstop"),
-    ROLL("/droll"),
-    TOP("/dtop"),
-    WINS("/dwins"),
-    HELP("/dhelp");
+    START("start"),
+    STOP("stop"),
+    ROLL("roll"),
+    TOP("top"),
+    WINS("wins");
 
     private final String commandName;
 

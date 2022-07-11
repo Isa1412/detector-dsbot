@@ -1,28 +1,25 @@
 package com.github.isa1412.detectordsbot.command;
 
+import com.github.isa1412.detectordsbot.bot.DetectorDsBot;
 import com.github.isa1412.detectordsbot.repository.entity.Member;
 import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateServiceImpl;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
@@ -35,49 +32,43 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
  * Integration-level testing for {@link StopCommand}.
  */
 @ActiveProfiles("test")
-@TestPropertySource(properties = {"spring.autoconfigure.exclude=com.github.isa1412.jda.starter.JDAAutoConfig"})
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = NONE)
 public class StopCommandIT {
 
+    @MockBean
+    DetectorDsBot detectorDsBot;
     @Autowired
     private MemberService memberService;
     @Autowired
     private CommandContainer commandContainer;
     private final ResponseGenerateService responseService = new ResponseGenerateServiceImpl(new ClassPathResource("responses.txt"));
     private final String commandName = STOP.getCommandName();
-    private MessageReceivedEvent event;
+    private SlashCommandInteractionEvent event;
 
     @BeforeEach
     public void init() {
         String userId = "123123123";
         String guildId = "678969697";
 
-        event = Mockito.mock(MessageReceivedEvent.class);
-        MessageChannel channel = Mockito.mock(MessageChannel.class);
-        Message message = Mockito.mock(Message.class);
-        MessageAction action = Mockito.mock(MessageAction.class);
         User user = Mockito.mock(User.class);
         Guild guild = Mockito.mock(Guild.class);
-
-        Mockito.when(event.getChannel()).thenReturn(channel);
-        Mockito.when(event.getMessage()).thenReturn(message);
-        Mockito.when(message.getContentDisplay()).thenReturn(commandName);
-        Mockito.when(channel.sendMessage(responseService.getNotMemberResponse())).thenReturn(action);
-        Mockito.when(channel.sendMessage(responseService.getAlreadyOutResponse())).thenReturn(action);
-        Mockito.when(channel.sendMessage(responseService.getOutGameResponse())).thenReturn(action);
-        Mockito.when(event.getAuthor()).thenReturn(user);
-        Mockito.when(event.getGuild()).thenReturn(guild);
+        event = Mockito.mock(SlashCommandInteractionEvent.class);
+        ReplyCallbackAction action = Mockito.mock(ReplyCallbackAction.class);
         Mockito.when(user.getId()).thenReturn(userId);
         Mockito.when(guild.getId()).thenReturn(guildId);
+        Mockito.when(event.getUser()).thenReturn(user);
+        Mockito.when(event.getGuild()).thenReturn(guild);
+        Mockito.when(event.getName()).thenReturn(commandName);
+        Mockito.when(event.reply(responseService.getNotMemberResponse())).thenReturn(action);
+        Mockito.when(event.reply(responseService.getAlreadyOutResponse())).thenReturn(action);
+        Mockito.when(event.reply(responseService.getOutGameResponse())).thenReturn(action);
     }
 
     @Sql(scripts = {"/sql/clearDB.sql"})
     @Test
     public void shouldProperlyNotMemberResponse() {
         //given
-        MessageChannel channel = event.getChannel();
         MemberId id = getMemberId(event);
 
         //when
@@ -85,7 +76,7 @@ public class StopCommandIT {
         Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getNotMemberResponse());
+        Mockito.verify(event).reply(responseService.getNotMemberResponse());
         assertTrue(saved.isEmpty());
     }
 
@@ -93,7 +84,6 @@ public class StopCommandIT {
     @Test
     public void shouldProperlyAlreadyOutResponse() {
         //given
-        MessageChannel channel = event.getChannel();
         MemberId id = getMemberId(event);
         Member member = new Member(id);
         member.setActive(false);
@@ -104,7 +94,7 @@ public class StopCommandIT {
         Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getAlreadyOutResponse());
+        Mockito.verify(event).reply(responseService.getAlreadyOutResponse());
         assertTrue(saved.isPresent());
         assertEquals(saved.get().getId(), member.getId());
         assertEquals(saved.get().getCount(), member.getCount());
@@ -115,7 +105,6 @@ public class StopCommandIT {
     @Test
     public void shouldProperlyOutGameResponse() {
         //given
-        MessageChannel channel = event.getChannel();
         MemberId id = getMemberId(event);
         Member member = new Member(id);
         memberService.save(member);
@@ -125,7 +114,7 @@ public class StopCommandIT {
         Optional<Member> saved = memberService.findById(id);
 
         //then
-        Mockito.verify(channel).sendMessage(responseService.getOutGameResponse());
+        Mockito.verify(event).reply(responseService.getOutGameResponse());
         assertTrue(saved.isPresent());
         assertEquals(saved.get().getId(), member.getId());
         assertEquals(saved.get().getCount(), member.getCount());

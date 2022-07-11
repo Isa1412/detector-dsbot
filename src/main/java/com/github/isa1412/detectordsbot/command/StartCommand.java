@@ -5,10 +5,8 @@ import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageService;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-import static com.github.isa1412.detectordsbot.command.CommandUtils.getChannel;
 import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
 
 /**
@@ -27,24 +25,23 @@ public class StartCommand implements Command {
     }
 
     @Override
-    public void execute(MessageReceivedEvent event) {
+    public void execute(SlashCommandInteractionEvent event) {
         MemberId memberId = getMemberId(event);
-        MessageChannel channel = getChannel(event);
 
         memberService.findById(memberId).ifPresentOrElse(
                 member -> {
                     if (member.isActive()) {
-                        messageService.sendMessage(channel, responseService.getAlreadyInResponse());
+                        messageService.sendReply(event, responseService.getAlreadyInResponse());
                     } else {
                         member.setActive(true);
                         memberService.save(member);
-                        messageService.sendMessage(channel, responseService.getInGameResponse());
+                        messageService.sendReply(event, responseService.getInGameResponse());
                     }
                 },
                 () -> {
                     Member member = new Member(memberId);
                     memberService.save(member);
-                    messageService.sendMessage(channel, responseService.getNewMemberResponse());
+                    messageService.sendReply(event, responseService.getNewMemberResponse());
                 }
         );
     }

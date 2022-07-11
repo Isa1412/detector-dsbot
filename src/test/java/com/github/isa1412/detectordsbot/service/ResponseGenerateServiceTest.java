@@ -2,14 +2,18 @@ package com.github.isa1412.detectordsbot.service;
 
 import com.github.isa1412.detectordsbot.repository.entity.Member;
 import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.MapDifference.ValueDifference;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections4.map.HashedMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Unit-level testing for ResponseGenerateService")
 class ResponseGenerateServiceTest {
@@ -126,15 +130,21 @@ class ResponseGenerateServiceTest {
     }
 
     @Test
-    public void shouldProperlyGenerateHelpResponse() {
+    public void shouldProperlyGenerateDescriptions() {
         //when
-        String response = responseService.getHelpResponse();
+        Map<String, String> expected = new HashedMap<>();
+        expected.put("start", "start/unpause the game");
+        expected.put("stop", "stop/pause the game");
+        expected.put("roll", "determine the winner of the day");
+        expected.put("top", "show top 10 winners");
+        expected.put("wins", "show your wins");
+        Map<String, String> descriptions = responseService.getDescriptions();
+        MapDifference<String, String> difference = Maps.difference(expected, descriptions);
+        Map<String, ValueDifference<String>> entriesDiffering = difference.entriesDiffering();
 
         //then
-        assertEquals("/dstart - start/unpause the game\n" +
-                "/dstop - stop/pause the game\n" +
-                "/droll - determine the winner of the day\n" +
-                "/dtop - show top 10 winners\n" +
-                "/dwins - show your wins", response);
+        assertNotNull(descriptions);
+        assertTrue(difference.areEqual());
+        assertEquals(0, entriesDiffering.size());
     }
 }

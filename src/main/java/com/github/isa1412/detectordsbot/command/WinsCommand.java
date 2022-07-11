@@ -4,10 +4,8 @@ import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageService;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-import static com.github.isa1412.detectordsbot.command.CommandUtils.getChannel;
 import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
 
 /**
@@ -26,13 +24,12 @@ public class WinsCommand implements Command {
     }
 
     @Override
-    public void execute(MessageReceivedEvent event) {
+    public void execute(SlashCommandInteractionEvent event) {
         MemberId memberId = getMemberId(event);
-        MessageChannel channel = getChannel(event);
 
         memberService.findActiveById(memberId).ifPresentOrElse(
-                member -> messageService.sendMessage(channel, responseService.getWinsResponse(memberId.getUserId(), member.getCount())),
-                () -> messageService.sendMessage(channel, responseService.getNotMemberResponse())
+                member -> messageService.sendReply(event, responseService.getWinsResponse(memberId.getUserId(), member.getCount())),
+                () -> messageService.sendReply(event, responseService.getNotMemberResponse())
         );
     }
 }

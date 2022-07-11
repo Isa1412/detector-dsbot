@@ -6,13 +6,16 @@ import com.github.isa1412.detectordsbot.repository.entity.id.MemberId;
 import com.github.isa1412.detectordsbot.service.MemberService;
 import com.github.isa1412.detectordsbot.service.ResponseGenerateService;
 import com.github.isa1412.detectordsbot.service.SendBotMessageService;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 import java.util.List;
 import java.util.Random;
 
-import static com.github.isa1412.detectordsbot.command.CommandUtils.*;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getMemberId;
+import static com.github.isa1412.detectordsbot.command.CommandUtils.getTimestamp;
+import static java.util.Objects.nonNull;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 /**
  * Roll {@link Command}.
@@ -30,37 +33,37 @@ public class RollCommand implements Command {
     }
 
     @Override
-    public void execute(MessageReceivedEvent event) {
+    public void execute(SlashCommandInteractionEvent event) {
         MemberId memberId = getMemberId(event);
-        MessageChannel channel = getChannel(event);
 
         memberService.findActiveById(memberId).ifPresentOrElse(
                 member -> {
-                    long timestamp = member.getGuild().getTimestamp();
+                    Guild guild = member.getGuild();
+                    long timestamp = guild.getTimestamp();
 
                     if (timestamp > getTimestamp(event) || timestamp == 0) {
-                        List<Member> members = memberService.findActiveByGuildId(memberId.getGuildId());
+                        List<Member> members = memberService.findActiveByGuildId(guild.getId());
                         Member winner = members.get(new Random().nextInt(members.size()));
-                        Guild guild = winner.getGuild();
                         guild.setTimestamp(getTimestamp(event));
                         winner.setGuild(guild);
                         winner.incCount();
                         memberService.save(winner);
 
                         List<String> response = responseService.getRollResponse(winner.getId().getUserId());
-                        for (String r : response) {
-                            messageService.sendMessageWithDelay(channel, r);
-                        }
+                        messageService.sendReply(event, response.get(0));
+                        response.stream()
+                                .skip(1)
+                                .forEach(r -> messageService.sendMessageWithDelay(event.getChannel(), r));
 
-                        String avatarUrl = event.getJDA().getUserById(winner.getId().getUserId()).getAvatarUrl();
-                        if (avatarUrl != null) {
-                            messageService.sendMessage(channel, avatarUrl);
+                        User user = event.getJDA().getUserById(winner.getId().getUserId());
+                        if (nonNull(user) && isNotBlank(user.getAvatarUrl())) {
+                            messageService.sendMessage(event.getChannel(), user.getAvatarUrl());
                         }
                     } else {
-                        messageService.sendMessage(channel, responseService.getCDResponse(timestamp));
+                        messageService.sendReply(event, responseService.getCDResponse(timestamp));
                     }
                 },
-                () -> messageService.sendMessage(channel, responseService.getNotMemberResponse())
+                () -> messageService.sendReply(event, responseService.getNotMemberResponse())
         );
     }
 }
