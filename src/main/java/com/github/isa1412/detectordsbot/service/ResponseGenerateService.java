@@ -4,6 +4,7 @@ import com.github.isa1412.detectordsbot.command.RollCommand;
 import com.github.isa1412.detectordsbot.repository.entity.Member;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service for generating responses to evens.
@@ -86,9 +87,9 @@ public interface ResponseGenerateService {
     String getWinsResponse(String memberId, int count);
 
     /**
-     * Generate a response with help info.
+     * Generate command descriptions.
      *
-     * @return {@link String} with response text.
+     * @return map with command name(key) and description text(value).
      */
-    String getHelpResponse();
+    Map<String, String> getDescriptions();
 }

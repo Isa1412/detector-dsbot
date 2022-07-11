@@ -12,7 +12,7 @@
 
 	<groupId>com.github.isa1412</groupId>
 	<artifactId>detector-dsbot</artifactId>
-	<version>0.8.0</version>
+	<version>0.9.0</version>
 
 	<name>Detector Discord Bot</name>
 	<description>Discord bot for AHiMEWKN^_^ community</description>
@@ -27,7 +27,6 @@
 	<properties>
 		<java.version>11</java.version>
 		<JDA.version>5.0.0-alpha.9</JDA.version>
-		<jda-starter.version>0.0.1</jda-starter.version>
 		<guava.version>30.0-jre</guava.version>
 	</properties>
 
@@ -37,9 +36,14 @@
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.github.Isa1412</groupId>
-			<artifactId>jda-spring-boot-starter</artifactId>
-			<version>${jda-starter.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>net.dv8tion</groupId>
+			<artifactId>JDA</artifactId>
+			<version>${JDA.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>

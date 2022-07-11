@@ -40,9 +40,9 @@
 ------------------Wins------------------
 [WIN][ID] you have [C] wins
 
-------------------Help------------------
-[HLP]/dstart - start/unpause the game
-[HLP]/dstop - stop/pause the game
-[HLP]/droll - determine the winner of the day
-[HLP]/dtop - show top 10 winners
-[HLP]/dwins - show your wins
+--------------Descriptions--------------
+[HLP]start - start/unpause the game
+[HLP]stop - stop/pause the game
+[HLP]roll - determine the winner of the day
+[HLP]top - show top 10 winners
+[HLP]wins - show your wins

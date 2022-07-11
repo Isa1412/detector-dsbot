@@ -1,3 +1,7 @@
+## 0.9.0
+* Discord slash commands support added
+* "/help" command deleted
+
 ## 0.8.0
 * "/wins" command added
 * "/help" command added

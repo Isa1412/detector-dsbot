@@ -2,11 +2,9 @@ package com.github.isa1412.detectordsbot.command;
 
 import com.github.isa1412.detectordsbot.service.*;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
@@ -32,26 +30,21 @@ abstract class AbstractCommandTest {
         String userId = "123123123";
         String guildId = "678969697";
 
-        MessageReceivedEvent event = Mockito.mock(MessageReceivedEvent.class);
-        MessageChannel channel = Mockito.mock(MessageChannel.class);
-        Message message = Mockito.mock(Message.class);
-        MessageAction action = Mockito.mock(MessageAction.class);
         User user = Mockito.mock(User.class);
         Guild guild = Mockito.mock(Guild.class);
-
-        Mockito.when(event.getChannel()).thenReturn(channel);
-        Mockito.when(event.getMessage()).thenReturn(message);
-        Mockito.when(message.getContentDisplay()).thenReturn(getCommandName());
-        Mockito.when(channel.sendMessage(getCommandMessage())).thenReturn(action);
-        Mockito.when(event.getAuthor()).thenReturn(user);
-        Mockito.when(event.getGuild()).thenReturn(guild);
+        SlashCommandInteractionEvent event = Mockito.mock(SlashCommandInteractionEvent.class);
+        ReplyCallbackAction action = Mockito.mock(ReplyCallbackAction.class);
         Mockito.when(user.getId()).thenReturn(userId);
         Mockito.when(guild.getId()).thenReturn(guildId);
+        Mockito.when(event.getUser()).thenReturn(user);
+        Mockito.when(event.getGuild()).thenReturn(guild);
+        Mockito.when(event.getName()).thenReturn(getCommandName());
+        Mockito.when(event.reply(getCommandMessage())).thenReturn(action);
 
         //when
         getCommand().execute(event);
 
         //then
-        Mockito.verify(channel).sendMessage(getCommandMessage());
+        Mockito.verify(event).reply(getCommandMessage());
     }
 }
