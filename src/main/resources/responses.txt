@@ -41,8 +41,8 @@
 [WIN][ID] you have [C] wins
 
 --------------Descriptions--------------
-[HLP]start - start/unpause the game
-[HLP]stop - stop/pause the game
-[HLP]roll - determine the winner of the day
-[HLP]top - show top 10 winners
-[HLP]wins - show your wins
+[DSC]start - start/unpause the game
+[DSC]stop - stop/pause the game
+[DSC]roll - determine the winner of the day
+[DSC]top - show top 10 winners
+[DSC]wins - show your wins

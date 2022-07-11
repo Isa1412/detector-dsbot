@@ -109,8 +109,8 @@ public class ResponseGenerateServiceImpl implements ResponseGenerateService {
     @Override
     public Map<String, String> getDescriptions() {
         return responses.stream()
-                .filter(r -> r.contains("[HLP]"))
-                .map(r -> r.replace("[HLP]", "").trim())
+                .filter(r -> r.contains("[DSC]"))
+                .map(r -> r.replace("[DSC]", "").trim())
                 .collect(Collectors.toMap(r -> r.split(" - ")[0], r -> r.split(" - ")[1]));
     }
 }
